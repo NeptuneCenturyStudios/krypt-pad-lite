@@ -2,29 +2,34 @@
 
   <v-app>
     <v-layout>
-      <v-app-bar color="primary" prominent>
-        <v-toolbar-title>My files</v-toolbar-title>
+      <v-app-bar absolute dense>
 
-        <v-spacer></v-spacer>
-
-        <v-btn variant="text" to="/">
-          <v-icon right dark>
-            mdi-home
-          </v-icon>
-          Home
+        <v-btn icon>
+          <v-icon>mdi-heart</v-icon>
         </v-btn>
-        
-        <v-btn variant="text" to="/about">
-          <v-icon right dark>
-            mdi-information-outline
-          </v-icon>
-          About
+
+        <v-btn icon>
+          <v-icon>mdi-magnify</v-icon>
         </v-btn>
 
       </v-app-bar>
 
-      <v-main>
-        <router-view />
+
+
+      <v-main style="margin-bottom:30px;">
+        <v-flex class="d-flex flex-column h-100">
+          <v-tabs>
+            <v-tab key="doc1">Document 1</v-tab>
+            <v-tab>Item Two</v-tab>
+            <v-tab>Item Three</v-tab>
+          </v-tabs>
+
+          <v-tabs-items v-model="tab" class="flex-grow-1">
+            <v-tab-item key="doc1" class="h-100">
+              <textarea class="w-100 h-100"></textarea>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-flex>
       </v-main>
     </v-layout>
   </v-app>
@@ -32,24 +37,19 @@
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+// With custom title bar, we need to make some CSS adjustments
+html {
+  overflow: auto;
 }
 
-nav {
-  padding: 30px;
+#app {
+  height: 100%;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+textarea {
+  resize: none;
+  outline: none;
+  padding: 1rem;
+  color: #fff;
 }
 </style>
