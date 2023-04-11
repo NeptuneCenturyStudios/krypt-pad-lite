@@ -6,13 +6,13 @@ setupTitlebar();
 
 // Create window to host our vue app
 const createWindow = () => {
-
   // Create window with options
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: false,
+    titleBarStyle: "hidden",
     webPreferences: {
+      sandbox: false,
       preload: path.join(__dirname, 'preload.js')
     }
   });
