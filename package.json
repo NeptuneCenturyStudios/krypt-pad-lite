@@ -3,21 +3,19 @@
   "version": "0.1.0",
   "private": false,
   "description": "A simple lightweight notepad with encryption",
-  "main": "main.js",
   "author": "Neptune Century Studios",
-  "license": "MIT",
   "scripts": {
     "build": "vue-cli-service build",
-    "build-dev": "vue-cli-service build --mode development",
-    "watch": "vue-cli-service build --mode development --watch",
     "lint": "vue-cli-service lint",
-    "start": "electron ."
+    "build-dev": "vue-cli-service build --mode development",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps",
+    "start": "electron .",
+    "watch": "vue-cli-service build --mode development --watch"
   },
-  "build":{
-    "files":[
-      "**/*"
-    ]
-  },
+  "main": "background.js",
   "dependencies": {
     "@mdi/font": "^7.2.96",
     "core-js": "^3.30.0",
@@ -34,9 +32,13 @@
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "electron": "^24.0.0",
+    "electron-builder": "^23.6.0",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^8.38.0",
     "eslint-plugin-vue": "^9.10.0",
     "sass": "^1.61.0",
-    "sass-loader": "^13.2.2"
-  }
+    "sass-loader": "^13.2.2",
+    "vue-cli-plugin-electron-builder": "~2.1.1"
+  },
+  "license": "MIT"
 }
