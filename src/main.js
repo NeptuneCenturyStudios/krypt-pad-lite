@@ -15,7 +15,8 @@ const vuetify = createVuetify(
         defaults: {
             global: {
                 // I love the ripple effect
-                ripple: true
+                ripple: true,
+                density: "comfortable"
             }
         },
         theme: {
