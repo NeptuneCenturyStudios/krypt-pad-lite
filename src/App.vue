@@ -7,17 +7,27 @@
 
         <v-flex class="d-flex flex-column h-100">
 
-          <v-app-bar >
+          <title-bar></title-bar>
 
-            <v-btn icon @click="minimize">
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
+          <v-toolbar density="compact">
+            <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+            <v-toolbar-title>Title</v-toolbar-title>
+
+            <v-spacer></v-spacer>
 
             <v-btn icon>
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
 
-          </v-app-bar>
+            <v-btn icon>
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+
+            <v-btn icon>
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </v-toolbar>
 
           <v-tabs>
             <v-tab key="doc1">Document 1</v-tab>
@@ -42,11 +52,14 @@
 </template>
 
 <script setup>
+
+import TitleBar from './components/TitleBar.vue';
+
 //const {remote} = require("electron");
 
-function minimize(){
+//function minimize() {
   //remote.BrowserWindow.getFocusedWindow().minimize();
-}
+//}
 
 </script>
 

@@ -1,12 +1,7 @@
-// const { Titlebar, Color } = require('custom-electron-titlebar');
+const { contextBridge, ipcRenderer } = require('electron')
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     // Title bar implemenation
-//     const titlebar = new Titlebar({
-//         backgroundColor: Color.fromHex("#333333")
-//     });
-
-//     titlebar.updateTitle("Krypt Pad Lite");
-// });
+contextBridge.exposeInMainWorld('electronAPI', {
+    toggleMaximizeRestore: () => ipcRenderer.send('toggle-maximize-restore')
+})
 
 console.log("preload.js loaded ok")

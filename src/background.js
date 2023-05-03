@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import path from "path"
@@ -38,6 +38,11 @@ async function createWindow() {
     win.loadURL('app://./index.html')
 
   }
+
+  win.on("maximize", () => {
+    console.log("The window has been maximized")
+  })
+
 }
 
 // Quit when all windows are closed.
@@ -58,7 +63,7 @@ app.on('activate', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', async () => {
+app.whenReady().then(async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -67,7 +72,29 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+
+  // Process IPC messages
+  ipcMain.on('toggle-maximize-restore', (e) => {
+    //if (!validateSender(e.senderFrame)) { return; }
+
+    const webContents = e.sender
+    const win = BrowserWindow.fromWebContents(webContents)
+
+    // Minimize or restore the window
+    win.isMaximized() ? win.restore() : win.maximize()
+
+  });
+
+  // function validateSender(frame) {
+  //   // Value the host of the URL using an actual URL parser and an allowlist
+  //   if ((new URL(frame.url)).host === 'electronjs.org') return true;
+  //   return false;
+  // }
+
+  
+
   createWindow()
+
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -84,3 +111,4 @@ if (isDevelopment) {
     })
   }
 }
+
