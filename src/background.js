@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, ipcRenderer } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import path from "path"
@@ -39,8 +39,12 @@ async function createWindow() {
 
   }
 
+  win.on("unmaximize", () => {
+    win.webContents.send("unmaximized")
+  })
+
   win.on("maximize", () => {
-    console.log("The window has been maximized")
+    win.webContents.send("maximized")
   })
 
 }
@@ -85,13 +89,35 @@ app.whenReady().then(async () => {
 
   });
 
+  ipcMain.on('minimize', (e) => {
+    //if (!validateSender(e.senderFrame)) { return; }
+
+    const webContents = e.sender
+    const win = BrowserWindow.fromWebContents(webContents)
+
+    // Minimize or restore the window
+    win.minimize()
+
+  });
+
+  ipcMain.on('close', (e) => {
+    //if (!validateSender(e.senderFrame)) { return; }
+
+    const webContents = e.sender
+    const win = BrowserWindow.fromWebContents(webContents)
+
+    // Minimize or restore the window
+    win.close()
+
+  });
+
   // function validateSender(frame) {
   //   // Value the host of the URL using an actual URL parser and an allowlist
   //   if ((new URL(frame.url)).host === 'electronjs.org') return true;
   //   return false;
   // }
 
-  
+
 
   createWindow()
 
