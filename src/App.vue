@@ -45,6 +45,8 @@
             </v-tab-item>
 
           </v-tabs-items>
+
+          
         </v-flex>
       </v-main>
     </v-layout>
@@ -80,11 +82,4 @@ textarea {
   color: #fff;
 }
 
-.v-application.v-layout--full-height {
-  //height: calc(100% - 30px);
-}
-
-.v-application__wrap {
-  min-height: 100%;
-}
 </style>

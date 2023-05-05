@@ -1,6 +1,6 @@
 <template>
-    <div class="title-bar d-flex align-center">
-        <span>{{ title }}</span>
+    <div class="title-bar d-flex align-center" :class="{ 'focused': isFocused }">
+        <span class="ml-3">{{ title }}</span>
 
         <div class="ml-auto">
             <button class="title-bar-button title-bar-button-minimize" type="button" @click="minimize"><v-icon
@@ -17,10 +17,11 @@
 
 <script setup>
 
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 // Define our reactive properties
 const isMaximized = ref(false);
+const isFocused = ref(true);
 
 defineProps({
     title: { type: String, default: "Krypt Pad Lite" }
@@ -40,25 +41,46 @@ function close() {
 }
 
 // Register any callback we need.
-// Register unmaximized callback
-window.electronAPI.onUnmaximized(() => {
+// Register unmaximize callback
+window.electronAPI.onUnmaximize(() => {
     isMaximized.value = false;
-})
+});
 
 // Register maximized callback
-window.electronAPI.onMaximized(() => {
+window.electronAPI.onMaximize(() => {
     isMaximized.value = true;
-})
+});
+
+window.electronAPI.onBlur(() => {
+    isFocused.value = false;
+});
+
+window.electronAPI.onFocus(() => {
+    isFocused.value = true;
+});
+
+// Component hooks
+onMounted(() => {
+    isMaximized.value = window.electronAPI.getIsMaximized();
+});
 
 </script>
 
 <style lang="scss" scoped>
-$button-hover: #555;
-$button-hover-close: #b81818;
+$title-bar-height: 30px;
+$dark-title-bar-blur-color: rgb(var(--v-theme-on-surface-variant));
+$dark-title-bar-focus-color: rgb(77, 77, 77);
+$light-title-bar-blur-color: rgb(var(--v-theme-on-surface-variant));
+$light-title-bar-focus-color: rgb(202, 202, 202);
+
+$dark-button-hover-color: #555;
+$light-button-hover-color: #cccccc;
+$button-hover-close-color: #db5252;
+
 $transition: background-color 200ms ease-in-out;
 
 .title-bar {
-    height: 2rem;
+    height: $title-bar-height;
     -webkit-user-select: none;
     webkit-user-select: none;
     -webkit-app-region: drag;
@@ -75,21 +97,39 @@ $transition: background-color 200ms ease-in-out;
 .title-bar .title-bar-button:hover {
     -webkit-app-region: no-drag;
     width: 3rem;
-    background-color: $button-hover;
+}
+
+.v-theme--dark .title-bar .title-bar-button:hover {
+    background-color: $dark-button-hover-color;
+}
+
+.v-theme--light .title-bar .title-bar-button:hover {
+    background-color: $light-button-hover-color;
 }
 
 .title-bar .title-bar-button.title-bar-button-close:hover {
-    background-color: $button-hover-close;
+    background-color: $button-hover-close-color;
 }
 
 
 .title-bar .title-bar-button i {
     font-size: .9rem;
-    height: 2rem;
+    height: $title-bar-height;
 }
 
 .v-theme--dark .title-bar {
-    background-color: rgb(var(--v-theme-on-surface-variant));
+    background-color: $dark-title-bar-blur-color;
+}
 
+.v-theme--light .title-bar {
+    background-color: $light-title-bar-blur-color;
+}
+
+.v-theme--dark .title-bar.focused {
+    background-color: $dark-title-bar-focus-color;
+}
+
+.v-theme--light .title-bar.focused {
+    background-color: $light-title-bar-focus-color;
 }
 </style>

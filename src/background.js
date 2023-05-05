@@ -1,9 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, ipcRenderer } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import path from "path"
+const { app, protocol, BrowserWindow, ipcMain } = require('electron')
+const windowStateKeeper = require('electron-window-state')
+const { default: installExtension, VUEJS3_DEVTOOLS } = require('electron-devtools-installer')
+const path = require('path')
+const { createProtocol } = require('vue-cli-plugin-electron-builder/lib')
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -12,11 +13,27 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
+let win = null;
+
+/**
+ * Creates the main browser window
+ */
 async function createWindow() {
+
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600
+  });
+
+  console.log(mainWindowState)
+
   // Create the browser window.
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  win = new BrowserWindow({
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    isMaximized: mainWindowState.isMaximized,
     titleBarStyle: "hidden",
     webPreferences: {
 
@@ -28,6 +45,16 @@ async function createWindow() {
     }
   })
 
+  // Register listeners on the window, so we can update the state
+  // automatically (the listeners will be removed when the window is closed)
+  // and restore the maximized or full screen state
+  mainWindowState.manage(win);
+
+  if (mainWindowState.isMaximized){
+    win.webContents.send("maximize")
+  }
+
+  // Open the dev tools in dev mode and load the main html file
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
@@ -39,13 +66,13 @@ async function createWindow() {
 
   }
 
-  win.on("unmaximize", () => {
-    win.webContents.send("unmaximized")
-  })
+  win.on("unmaximize", () => { win.webContents.send("unmaximize") })
 
-  win.on("maximize", () => {
-    win.webContents.send("maximized")
-  })
+  win.on("maximize", () => { win.webContents.send("maximize") })
+
+  win.on("blur", () => { win.webContents.send("blur") })
+
+  win.on("focus", () => { win.webContents.send("focus") })
 
 }
 
